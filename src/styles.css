@@ -1,0 +1,505 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  background: #000;
+  color: #ddd;
+  font-family: 'Courier New', ui-monospace, monospace;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+/* ---------- title ---------- */
+
+.title {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: radial-gradient(ellipse at center, #3a0a04 0%, #120200 60%, #000 100%);
+}
+
+.logo {
+  margin: 0;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: clamp(5rem, 18vw, 12rem);
+  letter-spacing: 0.05em;
+  line-height: 0.9;
+  transform: perspective(400px) rotateX(18deg);
+  background: linear-gradient(#ffe066 0%, #ff8a00 35%, #c41a00 70%, #5a0800 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 2px #2a0400;
+  filter: drop-shadow(0 6px 0 #000) drop-shadow(0 0 30px rgba(255, 80, 0, 0.35));
+}
+
+.subtitle {
+  margin: 0;
+  letter-spacing: 0.6em;
+  color: #c9c9c9;
+  font-weight: bold;
+}
+
+.tagline {
+  color: #aa8;
+  margin: 1rem 0;
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.btn {
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.1em;
+  padding: 0.4em 1.4em;
+  color: #ffd040;
+  background: #3a1a0a;
+  border: 3px solid #a04010;
+  box-shadow: inset 0 0 0 2px #000, 0 0 20px rgba(255, 80, 0, 0.25);
+  cursor: pointer;
+}
+
+.btn:hover,
+.btn:focus-visible {
+  background: #5a2a0a;
+  color: #fff;
+  outline: none;
+}
+
+.btn.small {
+  font-size: 1.1rem;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.3rem 2.5rem;
+  margin-top: 2rem;
+  font-size: 0.85rem;
+}
+
+.controls div {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.controls dt {
+  min-width: 7.5rem;
+  color: #ffb040;
+  font-weight: bold;
+}
+
+.controls dd {
+  margin: 0;
+  color: #aaa;
+}
+
+/* ---------- game ---------- */
+
+/* Viewport is 16:10; the status bar is 12% of the width. Fit both on screen. */
+.game {
+  --w: min(100vw, calc(100vh / 0.745));
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.viewport {
+  position: relative;
+  width: var(--w);
+  aspect-ratio: 400 / 250;
+}
+
+.viewport canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  cursor: crosshair;
+}
+
+.message {
+  position: absolute;
+  top: 1.5%;
+  left: 1.5%;
+  color: #e33;
+  font-size: calc(var(--w) * 0.022);
+  font-weight: bold;
+  text-shadow: 2px 2px 0 #000;
+  pointer-events: none;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  background: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+}
+
+.overlay h2 {
+  margin: 0;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: calc(var(--w) * 0.08);
+  letter-spacing: 0.05em;
+  color: #ffcc33;
+  text-shadow: 3px 3px 0 #000;
+}
+
+.overlay.dead {
+  background: rgba(60, 0, 0, 0.55);
+  cursor: default;
+}
+
+.overlay.dead h2 {
+  color: #ff3020;
+}
+
+.overlay.won {
+  background: rgba(0, 0, 0, 0.75);
+  cursor: default;
+}
+
+.overlay p {
+  margin: 0;
+  color: #ddd;
+  font-size: calc(var(--w) * 0.02);
+}
+
+.row {
+  display: flex;
+  gap: 1rem;
+}
+
+.stats {
+  font-family: Impact, Haettenschweiler, sans-serif;
+  font-size: calc(var(--w) * 0.035);
+  color: #e33;
+  border-spacing: 2em 0.2em;
+}
+
+.stats td:last-child {
+  color: #ffcc33;
+  text-align: right;
+}
+
+/* ---------- status bar ---------- */
+
+.statusbar {
+  width: var(--w);
+  --sb: calc(var(--w) * 0.12);
+  height: var(--sb);
+  display: grid;
+  grid-template-columns: 1fr 1.3fr 1fr 0.9fr 1.3fr 1.6fr;
+  gap: calc(var(--sb) * 0.033);
+  padding: calc(var(--sb) * 0.033);
+  background: repeating-linear-gradient(45deg, #5b5b5b 0 3px, #535353 3px 6px);
+  border-top: calc(var(--sb) * 0.033) solid #8a8a8a;
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #3a3a3a;
+  border: 2px solid;
+  border-color: #222 #888 #888 #222;
+  overflow: hidden;
+}
+
+.num {
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: calc(var(--sb) * 0.4);
+  line-height: 1;
+  color: #e01b10;
+  text-shadow: 2px 2px 0 #300;
+}
+
+.label {
+  font-family: Impact, Haettenschweiler, sans-serif;
+  font-size: calc(var(--sb) * 0.133);
+  letter-spacing: 0.1em;
+  color: #ddd;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.slots {
+  display: flex;
+  gap: calc(var(--sb) * 0.083);
+  font-family: Impact, sans-serif;
+  font-size: calc(var(--sb) * 0.25);
+  color: #555;
+}
+
+.slots .have {
+  color: #ffcc33;
+}
+
+.slots .on {
+  color: #fff;
+  text-shadow: 0 0 6px #ffcc33;
+}
+
+.facecell {
+  background: #222;
+}
+
+.face {
+  height: 92%;
+}
+
+.ammo-list {
+  align-items: stretch;
+  padding: 0 0.6em;
+  font-size: calc(var(--sb) * 0.142);
+  color: #ccc;
+  gap: 0.15em;
+}
+
+.ammo-list div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ammo-list span {
+  color: #aaa;
+  flex: 1;
+}
+
+.ammo-list b {
+  color: #ffcc33;
+}
+
+.install {
+  margin: 0.4rem 0 0;
+  padding: 0.4em 0.9em;
+  font-size: 0.85rem;
+  color: #ffd040;
+  border: 1px dashed #a04010;
+}
+
+/* Short landscape screens (phones): compact title. */
+@media (max-height: 500px) {
+  .title {
+    gap: 0.3rem;
+  }
+  .logo {
+    font-size: 4.5rem;
+  }
+  .tagline {
+    margin: 0.2rem 0;
+  }
+  .btn {
+    font-size: 1.4rem;
+  }
+  .controls {
+    margin-top: 0.6rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* ---------- phone layout ---------- */
+
+/* The view fills the screen; the engine matches its render width to this shape. */
+.game.touch {
+  --w: 100vw;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  justify-content: stretch;
+  touch-action: none;
+}
+
+.game.touch .viewport {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  aspect-ratio: auto;
+}
+
+.game.touch .statusbar {
+  --sb: clamp(36px, 11vh, 54px);
+  width: 100%;
+  height: calc(var(--sb) + env(safe-area-inset-bottom));
+  padding-left: max(calc(var(--sb) * 0.033), env(safe-area-inset-left));
+  padding-right: max(calc(var(--sb) * 0.033), env(safe-area-inset-right));
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.game.touch .message {
+  left: max(1.5%, env(safe-area-inset-left));
+  font-size: 14px;
+}
+
+.touch-controls {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+
+.stick-zone,
+.look-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  touch-action: none;
+}
+
+.stick-zone {
+  left: 0;
+  width: 45%;
+}
+
+.look-zone {
+  right: 0;
+  width: 55%;
+}
+
+.zone-hint {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.25);
+  pointer-events: none;
+}
+
+.stick-base {
+  position: absolute;
+  width: 112px;
+  height: 112px;
+  margin: -56px 0 0 -56px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.25);
+  display: none;
+  pointer-events: none;
+}
+
+.stick-base.active {
+  display: block;
+}
+
+.stick-knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 180, 64, 0.55);
+  border: 2px solid rgba(255, 220, 150, 0.8);
+}
+
+.tbtn {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 200, 120, 0.6);
+  background: rgba(60, 20, 5, 0.45);
+  color: rgba(255, 230, 180, 0.9);
+  font-family: Impact, Haettenschweiler, sans-serif;
+  letter-spacing: 0.05em;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.tbtn:active {
+  background: rgba(200, 60, 10, 0.6);
+}
+
+.tbtn.fire {
+  width: 84px;
+  height: 84px;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: 18px;
+  font-size: 20px;
+  background: rgba(160, 20, 5, 0.5);
+}
+
+.tbtn.use {
+  width: 58px;
+  height: 58px;
+  right: calc(max(18px, env(safe-area-inset-right)) + 96px);
+  bottom: 22px;
+  font-size: 15px;
+}
+
+.tbtn.swap {
+  width: 48px;
+  height: 48px;
+  right: calc(max(18px, env(safe-area-inset-right)) + 18px);
+  bottom: 116px;
+  font-size: 20px;
+}
+
+.tbar {
+  position: absolute;
+  top: max(8px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  display: flex;
+  gap: 10px;
+}
+
+.tbtn.small {
+  position: static;
+  width: auto;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.rotate-hint {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  background: #000;
+  color: #ffcc33;
+  font-family: Impact, Haettenschweiler, sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.05em;
+}
+
+.phone-icon {
+  width: 44px;
+  height: 76px;
+  border: 4px solid #ffcc33;
+  border-radius: 8px;
+  animation: rotate-phone 2s ease-in-out infinite;
+}
+
+@keyframes rotate-phone {
+  0%, 20% { transform: rotate(0deg); }
+  60%, 100% { transform: rotate(-90deg); }
+}
